@@ -1,5 +1,6 @@
 import os
 
+
 # Working directory is the directory the llm cannot step out of
 # via ../../...
 def get_file_info(working_directory: str, directory: str = ".") -> str:
