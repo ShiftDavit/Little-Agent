@@ -1,9 +1,8 @@
 import os
 
-
 # Working directory is the directory the llm cannot step out of
 # via ../../...
-def get_file_info(working_directory: str, directory: str = ".") -> str:
+def list_files(working_directory: str, directory: str = ".") -> str:
     try:
         workdir_abs = os.path.abspath(working_directory)
         target_dir = os.path.normpath(os.path.join(workdir_abs, directory))
