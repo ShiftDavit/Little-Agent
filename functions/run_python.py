@@ -1,6 +1,8 @@
 import os
 import subprocess
 
+PROCESS_TIMEOUT_SEC = 30
+
 def run_python(
     working_directory: str, file_path: str, args: list[str] | None = None
 ) -> str:
@@ -27,7 +29,7 @@ def run_python(
             cwd=workdir_abs,
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=PROCESS_TIMEOUT_SEC
         )
 
         output = ""
