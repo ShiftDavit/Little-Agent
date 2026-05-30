@@ -1,5 +1,11 @@
 from google.genai import types
 from config import CONTENT_READ_LIMIT
+from collections.abc import Callable
+
+from get_file_content import get_file_content
+from list_files import list_files
+from run_python import run_python
+from write_file import write_file
 
 functions = types.Tool(
     function_declarations=[
@@ -78,3 +84,43 @@ functions = types.Tool(
         ),
     ]
 )
+
+function_map: dict[str, Callable[..., str]] = {
+    "get_file_content": get_file_content,
+    "list_files": list_files,
+    "run_python": run_python,
+    "write_file": write_file,
+}
+
+def call_function(function_call: types.FunctionCall, verbose: bool = False) -> types.Content:
+    if verbose:
+        print(f"Calling function: {function_call.name}({function_call.args})")
+    else:
+        print(f" - Calling function: {function_call.name}")
+
+    name = function_call.name or "" # in case of None
+    func = function_map[name]
+    if not func:
+        return types.Content(
+            role="tool",
+            parts=[
+                types.Part.from_function_response(
+                    name=name,
+                    response={"error": f"Unknown function: {name}"},
+                )
+            ],
+        )
+    
+    args = dict(function_call.args) if function_call.args else {}
+    args["working_directory"] = "./calculator"
+
+    result = func(**args)
+    return types.Content(
+        role="tool",
+        parts=[
+            types.Part.from_function_response(
+                name=name,
+                response={"result": result},
+            )
+        ],
+    )
