@@ -2,10 +2,10 @@ from google.genai import types
 from config import CONTENT_READ_LIMIT
 from collections.abc import Callable
 
-from get_file_content import get_file_content
-from list_files import list_files
-from run_python import run_python
-from write_file import write_file
+from functions.get_file_content import get_file_content
+from functions.list_files import list_files
+from functions.run_python import run_python
+from functions.write_file import write_file
 
 functions = types.Tool(
     function_declarations=[
